@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JNLITX | Live Crypto Analytics</title>
+
+    <!-- Fonts: Rajdhani for that Tech/Futuristic Look -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+
+    <!-- Phosphor Icons -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- Animated Background -->
+    <div class="bg-layer">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="grid-overlay"></div>
+    </div>
+
+    <div class="dashboard-wrapper">
+
+        <!-- Header / Nav -->
+        <header class="glass-header">
+            <div class="logo-section">
+                <i class="ph-fill ph-polygon icon-logo"></i>
+                <div>
+                    <h1>JNLITX</h1>
+                    <span class="subtitle">by Aditya Verma</span>
+                </div>
+            </div>
+
+            <div class="live-ticker-container">
+                <div class="ticker-wrap">
+                    <div class="ticker-move" id="ticker-content">
+                        <!-- Injected by JS -->
+                        <span class="ticker-item">Loading Market Data...</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Header Actions -->
+            <div class="header-actions">
+                <div class="gas-station" id="gas-station" title="ETH Gas (Gwei)">
+                    <i class="ph-fill ph-gas-pump"></i> <span id="gas-gwei">--</span>
+                </div>
+                <button class="icon-btn" id="btn-portfolio" title="MyBag Portfolio"><i
+                        class="ph-fill ph-wallet"></i></button>
+                <button class="icon-btn" id="btn-tv-mode" title="TV / Kiosk Mode"><i
+                        class="ph-fill ph-monitor-play"></i></button>
+                <div class="clock-container">
+                    <div id="live-clock" class="digital-clock">--:--:--</div>
+                    <div id="live-date" class="date-display">--</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Main Content Grid -->
+        <main class="main-grid">
+
+            <!-- Left: Market Leaderboard -->
+            <section class="glass-panel market-list-section">
+                <div class="panel-header">
+                    <h3>Top Assets</h3>
+                    <div class="panel-actions">
+                        <button class="refresh-btn" id="btn-heatmap" title="Toggle Heatmap"><i
+                                class="ph-bold ph-squares-four"></i></button>
+                        <button class="refresh-btn" id="refresh-btn"><i
+                                class="ph-bold ph-arrows-clockwise"></i></button>
+                    </div>
+                </div>
+
+                <!-- List View -->
+                <div class="table-container" id="market-list-view">
+                    <table class="market-table">
+                        <thead>
+                            <tr>
+                                <th>Asset</th>
+                                <th class="text-right">Price</th>
+                                <th class="text-right">24h %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="market-table-body"></tbody>
+                    </table>
+                </div>
+
+                <!-- Heatmap View (Hidden by default) -->
+                <div class="heatmap-container" id="market-heatmap-view" style="display:none;">
+                    <!-- Grid injected by JS -->
+                </div>
+            </section>
+
+            <!-- Center: Main Analysis (Chart) -->
+            <section class="glass-panel hero-chart-section">
+                <div class="chart-header">
+                    <div class="asset-info">
+                        <img id="selected-icon" src="" alt="" style="display:none;">
+                        <div>
+                            <h2 id="selected-name">Bitcoin</h2>
+                            <span id="selected-symbol">BTC/USD</span>
+                            <button class="icon-btn-small" id="btn-alarm" title="Set Price Alarm"><i
+                                    class="ph-bold ph-bell"></i></button>
+                        </div>
+                    </div>
+                    <div class="price-big">
+                        <span id="hero-price">--</span>
+                        <span id="hero-change" class="change-badge">--%</span>
+                    </div>
+                </div>
+
+                <div class="chart-controls-row">
+                    <div class="chart-controls">
+                        <button class="time-btn active" data-time="1D">1D</button>
+                        <button class="time-btn" data-time="1W">1W</button>
+                        <button class="time-btn" data-time="1M">1M</button>
+                        <button class="time-btn" data-time="1Y">1Y</button>
+                    </div>
+
+                    <!-- TA Layers -->
+                    <div class="ta-toggles">
+                        <label><input type="checkbox" id="ta-sma"> SMA</label>
+                        <label><input type="checkbox" id="ta-ema"> EMA</label>
+                        <label><input type="checkbox" id="ta-bb"> BB</label>
+                    </div>
+                </div>
+
+                <!-- Flash Converter -->
+                <div class="converter-panel">
+                    <div class="input-group">
+                        <input type="number" id="conv-crypto" placeholder="1.0" step="any">
+                        <span id="conv-symbol">BTC</span>
+                    </div>
+                    <i class="ph-bold ph-arrows-left-right swap-icon"></i>
+                    <div class="input-group">
+                        <input type="number" id="conv-fiat" placeholder="0.00" step="any">
+                        <span id="currency-label">USD</span>
+                    </div>
+                </div>
+
+                <div class="canvas-wrapper">
+                    <canvas id="mainChart"></canvas>
+                </div>
+
+                <!-- Breaking News Feed -->
+                <div class="news-section">
+                    <h4>Breaking News <i class="ph-fill ph-newspaper"></i></h4>
+                    <div class="news-ticker" id="news-feed">
+                        <!-- News items injected -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Right: Global Stats & Details -->
+            <section class="stats-column">
+
+                <!-- Arbitrage Radar -->
+                <div class="glass-panel arb-card">
+                    <div class="fg-header"><i class="ph-duotone ph-crosshair"></i> Arbitrage Radar</div>
+                    <div class="arb-grid" id="arb-grid">
+                        <div class="arb-row"><span>Binance</span> <span id="arb-binance">--</span></div>
+                        <div class="arb-row"><span>Coinbase</span> <span id="arb-coinbase">--</span></div>
+                        <div class="arb-row"><span>Kraken</span> <span id="arb-kraken">--</span></div>
+                    </div>
+                </div>
+
+                <!-- Fear & Greed -->
+                <div class="glass-panel fg-card">
+                    <div class="fg-header">
+                        <i class="ph-duotone ph-lightning"></i>
+                        <span>Market Sentiment</span>
+                    </div>
+                    <div class="fg-meter">
+                        <div class="fg-bar">
+                            <div id="fg-fill" class="fg-fill"></div>
+                        </div>
+                        <div class="fg-labels">
+                            <span id="fg-value">--</span>
+                            <span id="fg-text">Loading...</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Whale Watch -->
+                <div class="glass-panel whale-card">
+                    <h3>Whale Watch 🐋</h3>
+                    <div class="whale-list" id="whale-list"></div>
+                </div>
+
+                <!-- Global Metrics -->
+                <div class="glass-panel stat-card">
+                    <div class="icon-box"><i class="ph-duotone ph-globe"></i></div>
+                    <div class="stat-info">
+                        <small>Market Cap</small>
+                        <h4 id="global-cap">--</h4>
+                    </div>
+                </div>
+
+                <div class="glass-panel stat-card">
+                    <div class="icon-box"><i class="ph-duotone ph-chart-bar"></i></div>
+                    <div class="stat-info">
+                        <small>24h Volume</small>
+                        <h4 id="global-vol">--</h4>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer / Currency Switcher -->
+        <footer class="main-footer">
+            <div class="currency-selector">
+                <i class="ph-fill ph-currency-circle-dollar"></i>
+                <select id="currency-select">
+                    <option value="USD">USD ($)</option>
+                    <option value="EUR">EUR (€)</option>
+                    <option value="GBP">GBP (£)</option>
+                    <option value="JPY">JPY (¥)</option>
+                    <option value="INR">INR (₹)</option>
+                </select>
+            </div>
+            <div class="watermark">JNLITX Ultimate &copy; 2026 Aditya Verma</div>
+        </footer>
+    </div>
+
+    <!-- Modals -->
+
+    <!-- Portfolio Modal -->
+    <div id="modal-portfolio" class="modal-overlay">
+        <div class="modal-glass">
+            <div class="modal-header">
+                <h2>MyBag Portfolio 💰</h2>
+                <button class="close-modal"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <div class="modal-body">
+                <div class="portfolio-summary">
+                    <span>Net Worth</span>
+                    <h1 id="port-total">--</h1>
+                </div>
+                <div class="add-holding-form">
+                    <select id="port-asset-select"></select>
+                    <input type="number" id="port-amount" placeholder="Amount (e.g. 0.5)">
+                    <button id="btn-add-holding">Add</button>
+                </div>
+                <div class="holding-list" id="holding-list">
+                    <!-- Holdings List -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alarm Modal -->
+    <div id="modal-alarm" class="modal-overlay">
+        <div class="modal-glass">
+            <div class="modal-header">
+                <h2>Price Alarm 🔔</h2>
+                <button class="close-modal"><i class="ph-bold ph-x"></i></button>
+            </div>
+            <div class="modal-body">
+                <p>Set alert for <b id="alarm-symbol">BTC</b></p>
+                <div class="input-group">
+                    <input type="number" id="alarm-target" placeholder="Target Price">
+                    <span>USD</span>
+                </div>
+                <button id="btn-set-alarm" class="action-btn">Set Alarm</button>
+                <div id="active-alarms"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loader" class="loader-overlay">
+        <div class="spinner"></div>
+        <p>Connecting to Global Markets...</p>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>
