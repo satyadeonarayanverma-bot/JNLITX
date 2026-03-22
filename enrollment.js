@@ -3,7 +3,7 @@
  * Handles Razorpay checkout and student credential generation.
  */
 
-window.startEnrollmentFlow = async function(amount, courseName) {
+window.startEnrollmentFlow = async function (amount, courseName) {
     try {
         const toast = showEnrollmentToast(`Initiating payment for ${courseName}...`);
 
@@ -13,7 +13,7 @@ window.startEnrollmentFlow = async function(amount, courseName) {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ amount: amount })
         });
-        
+
         const responseText = await response.text();
         let order;
         try {
@@ -31,7 +31,7 @@ window.startEnrollmentFlow = async function(amount, courseName) {
 
         // 2. Open Razorpay Checkout
         const options = {
-            key: 'rzp_test_YOUR_KEY_HERE', // REPLACE WITH YOUR ACTUAL RAZORPAY KEY ID
+            key: 'rzp_live_SUBTAEzV3epo5h', // YOUR ACTUAL RAZORPAY LIVE KEY ID
             amount: order.amount,
             currency: order.currency,
             name: "EduASK Elite",
@@ -90,7 +90,7 @@ function showEnrollmentModal(paymentResponse, courseName) {
 
         submitNameBtn.disabled = true;
         submitNameBtn.textContent = "Verifying...";
-        
+
         try {
             const verificationResponse = await fetch('/api/verify-payment', {
                 method: 'POST',
@@ -120,7 +120,7 @@ function showEnrollmentModal(paymentResponse, courseName) {
             if (result.status === 'success') {
                 nameStep.style.display = 'none';
                 credentialsStep.style.display = 'block';
-                
+
                 document.getElementById('display-enroll-id').textContent = result.enrollment.enrollId;
                 document.getElementById('display-password').textContent = result.enrollment.password;
 
@@ -200,7 +200,7 @@ function injectEnrollmentModalHTML() {
         </div>
     </div>`;
     document.body.insertAdjacentHTML('beforeend', modalHTML);
-    
+
     // Add simple hover effect for the name input via JS if needed, but CSS is better.
     const input = document.getElementById('student-name-input');
     if (input) {
