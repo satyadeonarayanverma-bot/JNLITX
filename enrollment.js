@@ -14,24 +14,24 @@ window.startEnrollmentFlow = async function(amount, courseName) {
             body: JSON.stringify({ amount: amount })
         });
         
-        if (!response.ok) {
-            let errorMsg = 'Failed to initialize payment';
-            try {
-                const errorData = await response.json();
-                errorMsg = errorData.error || errorMsg;
-            } catch (e) {
-                // Not JSON, likely an HTML error page from Vercel
-                console.error('Non-JSON error response:', await response.text());
-            }
-            throw new Error(errorMsg);
+        const responseText = await response.text();
+        let order;
+        try {
+            order = responseText ? JSON.parse(responseText) : {};
+        } catch (e) {
+            console.error('Failed to parse order JSON:', responseText);
+            throw new Error('Invalid server response during order creation');
         }
 
-        const order = await response.json();
+        if (!response.ok) {
+            throw new Error(order.error || 'Failed to initialize payment');
+        }
+
         if (!order.id) throw new Error('Invalid order received from server');
 
         // 2. Open Razorpay Checkout
         const options = {
-            key: 'rzp_test_your_key_here', // In production, this can be fetched or set via env
+            key: 'rzp_test_YOUR_KEY_HERE', // REPLACE WITH YOUR ACTUAL RAZORPAY KEY ID
             amount: order.amount,
             currency: order.currency,
             name: "EduASK Elite",
@@ -92,7 +92,7 @@ function showEnrollmentModal(paymentResponse, courseName) {
         submitNameBtn.textContent = "Verifying...";
         
         try {
-            const verification = await fetch('/api/verify-payment', {
+            const verificationResponse = await fetch('/api/verify-payment', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
@@ -104,11 +104,18 @@ function showEnrollmentModal(paymentResponse, courseName) {
                 })
             });
 
-            if (!verification.ok) {
-                throw new Error('Verification failed. Please contact support.');
+            const verificationText = await verificationResponse.text();
+            let result;
+            try {
+                result = verificationText ? JSON.parse(verificationText) : {};
+            } catch (e) {
+                console.error('Failed to parse verification JSON:', verificationText);
+                throw new Error('Invalid server response during verification');
             }
 
-            const result = await verification.json();
+            if (!verificationResponse.ok) {
+                throw new Error(result.message || 'Verification failed. Please contact support.');
+            }
 
             if (result.status === 'success') {
                 nameStep.style.display = 'none';
