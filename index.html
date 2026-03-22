@@ -3,44 +3,609 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>MONASPECT | Premium Crypto Analytics</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduASK — Build Skills. Earn Certifications. Shape Your Future.</title>
+    <meta name="description"
+        content="EduASK is a modern education platform that helps students build critical skills, gain industry certifications, and navigate curated learning paths for career success.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Lottie Player for Animated Visuals -->
+    <script src="https://unpkg.com/@lottiefiles/lottie-player@latest/dist/lottie-player.js"></script>
+
+    <!-- Razorpay Checkout SDK -->
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8yV74UJ5gWhczUmq9MT0jpr-vHpyebfM",
+            authDomain: "qilin-8255a.firebaseapp.com",
+            projectId: "qilin-8255a",
+            storageBucket: "qilin-8255a.firebasestorage.app",
+            messagingSenderId: "491492633338",
+            appId: "1:491492633338:web:accfe9bac30bd868d9b743"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.eduSync = { db, doc, getDoc, collection, query, where, getDocs };
+    </script>
+    <style>
+    </style>
 </head>
 
 <body>
-    <div id="app">
-        <header class="glass-header">
-            <div class="logo">
-                <div class="logo-icon"></div>
-                <h1>MONASPECT</h1>
-            </div>
-            <nav>
-                <!-- Navigation links if needed, or context actions -->
-            </nav>
-        </header>
 
-        <main id="content">
-            <!-- Dynamic Content Injected Here -->
-            <div class="loading-screen">
-                <div class="loader"></div>
-                <p>Initializing Monaspect AI...</p>
-            </div>
-        </main>
-
-        <div class="background-globes">
-            <div class="globe globe-1"></div>
-            <div class="globe globe-2"></div>
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="#" class="logo-container">
+                <svg class="logo-svg" viewBox="0 0 48 48" width="44" height="44" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M24 38 C24 38 6 34 6 18 L6 10 C6 10 14 8 24 14 C34 8 42 10 42 10 L42 18 C42 34 24 38 24 38Z"
+                        fill="url(#bookGrad)" stroke="#0d47a1" stroke-width="1.5" stroke-linejoin="round" />
+                    <line x1="24" y1="14" x2="24" y2="38" stroke="#0d47a1" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M24 6 L19 13 L22 13 L22 22 L26 22 L26 13 L29 13 Z" fill="#ffb300" />
+                    <rect x="18" y="4" width="12" height="3" rx="1.5" fill="#0d47a1" />
+                    <defs>
+                        <linearGradient id="bookGrad" x1="6" y1="10" x2="42" y2="38">
+                            <stop offset="0%" stop-color="#e3f2fd" />
+                            <stop offset="100%" stop-color="#bbdefb" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">Edu<span class="logo-highlight">ASK</span></span>
+            </a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="certifications.html">Certifications</a></li>
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu" id="mobile-menu-btn">
+                <span></span><span></span><span></span>
+            </button>
         </div>
+    </nav>
 
-        <div class="watermark">MONASPECT · by Aditya Verma</div>
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav" id="mobile-nav">
+        <ul>
+            <li><a href="certifications.html" class="mobile-link">Certifications</a></li>
+            <li><a href="about.html" class="mobile-link">About Us</a></li>
+            <li><a href="faq.html" class="mobile-link">FAQ</a></li>
+        </ul>
     </div>
 
-    <!-- Core Systems -->
-    <script src="data.js"></script>
-    <script src="graph.js"></script>
-    <script src="app.js"></script>
+    <!-- ========== HERO SECTION ========== -->
+    <section class="hero" id="home">
+        <div class="container hero-content">
+            <div class="hero-text">
+                <h1>Build Skills.<br>Earn Certifications.<br>Shape Your Future.</h1>
+                <p class="hero-description">EduASK is the modern education platform that empowers students with
+                    industry-aligned courses, globally recognized certifications, and curated learning paths —
+                    everything you need to stand out in a competitive world.</p>
+                <div class="hero-actions">
+                    <a href="certifications.html" class="btn btn-primary">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" style="margin-right:.5rem">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Get Certified
+                    </a>
+                    <a href="#about" class="btn btn-outline">Learn More</a>
+                </div>
+                <div class="trust-strip">
+                    <div class="trust-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg>
+                        <span>Verified Certificates</span>
+                    </div>
+                    <div class="trust-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5">
+                            <polyline points="20 6 9 17 4 12" />
+                        </svg>
+                        <span>Self-Paced Learning</span>
+                    </div>
+                    <div class="trust-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2.5">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg>
+                        <span>Lifetime Access</span>
+                    </div>
+                </div>
+            </div>            <div class="hero-visual">
+                <div class="decorative-blob"></div>
+                <div class="hero-image-container" id="heroImageWrapper">
+                    <img src="images/hero_woman_cert.png" alt="EduASK Certified Professional" class="hero-premium-img">
+                    <div class="hero-glow-effect"></div>
+                </div>
+
+                <!-- Floating Cards -->
+                <div class="floating-card card-a">
+                    <div class="fc-icon fc-icon-green">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>Certification Earned</strong>
+                        <span>Global Recognition</span>
+                    </div>
+                </div>
+                <div class="floating-card card-b">
+                    <div class="fc-icon fc-icon-amber">
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg>
+                    </div>
+                    <div>
+                        <strong>4.9 / 5 Rating</strong>
+                        <span>12,800+ Students</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== STATS BAR ========== -->
+    <section class="stats-bar">
+        <div class="container stats-grid">
+            <div class="stat-item">
+                <span class="stat-number" data-target="15000">0</span><span class="stat-plus">+</span>
+                <span class="stat-label">Active Learners</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="20">0</span><span class="stat-plus">+</span>
+                <span class="stat-label">Expert-Led Courses</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="50">0</span><span class="stat-plus">+</span>
+                <span class="stat-label">Industry Certifications</span>
+            </div>
+            <div class="stat-item">
+                <span class="stat-number" data-target="95">0</span><span class="stat-percent">%</span>
+                <span class="stat-label">Career Success Rate</span>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CERTIFICATIONS SECTION ========== -->
+    <section class="certifications section-padding" id="certifications">
+        <div class="container">
+            <div class="cert-grid">
+                <div class="cert-text">
+
+                    <h2>Globally Recognized Certification Support</h2>
+                    <p>EduASK provides its own rigorous, expert-designed certification programs that validate real-world
+                        skills. Each of our 20+ courses is built to ensure you can demonstrate competence that employers
+                        genuinely value.</p>
+                    <p>Beyond our own certifications, we offer comprehensive guidance and preparatory resources for
+                        certifications issued by the world's leading technology companies — including Google, AWS,
+                        Microsoft, and more.</p>
+                    <ul class="cert-features">
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d47a1"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>EduASK proprietary certification programs</span>
+                        </li>
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d47a1"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Guidance for AWS, Google Cloud, Azure &amp; more</span>
+                        </li>
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d47a1"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Verifiable digital certificates with unique IDs</span>
+                        </li>
+                        <li>
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0d47a1"
+                                stroke-width="2.5">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Lifetime access to all 20+ course materials</span>
+                        </li>
+                    </ul>
+                    <a href="certifications.html" class="btn btn-primary mt-2">
+                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2.5" style="margin-right:.5rem">
+                            <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14" />
+                            <polyline points="22 4 12 14.01 9 11.01" />
+                        </svg>
+                        Get Certified
+                    </a>
+                </div>
+
+                <div class="cert-visual">
+                    <div class="certificate-preview" id="cert-preview">
+                        <div class="cert-ornament-tl"></div>
+                        <div class="cert-ornament-br"></div>
+                        <div class="cert-inner">
+                            <div class="cert-header-area">
+                                <svg class="cert-logo-icon" viewBox="0 0 48 48" width="32" height="32" fill="none"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path
+                                        d="M24 38 C24 38 6 34 6 18 L6 10 C6 10 14 8 24 14 C34 8 42 10 42 10 L42 18 C42 34 24 38 24 38Z"
+                                        fill="#e3f2fd" stroke="#0d47a1" stroke-width="1.5" stroke-linejoin="round" />
+                                    <line x1="24" y1="14" x2="24" y2="38" stroke="#0d47a1" stroke-width="1.5"
+                                        stroke-linecap="round" />
+                                    <path d="M24 6 L19 13 L22 13 L22 22 L26 22 L26 13 L29 13 Z" fill="#ffb300" />
+                                    <rect x="18" y="4" width="12" height="3" rx="1.5" fill="#0d47a1" />
+                                </svg>
+                                <div class="cert-brand-text">EduASK</div>
+                                <div class="cert-type">CERTIFICATE OF COMPLETION</div>
+                            </div>
+                            <div class="cert-body-area">
+                                <div class="cert-presented">This is proudly presented to</div>
+                                <div class="cert-recipient">Aditya Verma</div>
+                                <div class="cert-for">for successfully completing the requirements of</div>
+                                <div class="cert-course">Advanced Full-Stack Engineering</div>
+                            </div>
+                            <div class="cert-details-area">
+                                <div class="cert-meta-col">
+                                    <div class="cert-meta-item"><strong>Certificate ID</strong>EA-9823-XYZ</div>
+                                    <div class="cert-meta-item"><strong>Issue Date</strong>March 15, 2026</div>
+                                </div>
+                                <div class="cert-sig-col">
+                                    <div class="cert-sig-name">Dr. Alan Turing</div>
+                                    <div class="cert-sig-label">Authorized Signature</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== WHY EDUASK ========== -->
+    <section class="why-section section-padding bg-light">
+        <div class="container">
+            <div class="text-center">
+
+                <h2 class="section-title">What Sets Us Apart</h2>
+                <p class="section-description">We go beyond traditional learning platforms. EduASK combines expert-led
+                    instruction, globally recognized certifications, and personalized learning paths into one seamless
+                    experience.</p>
+            </div>
+            <div class="why-grid mt-5">
+                <div class="why-card">
+                    <div class="why-number">01</div>
+                    <h3>Expert-Designed Curriculum</h3>
+                    <p>Every one of our 20+ courses is crafted by industry veterans with real-world experience, ensuring
+                        you learn what actually matters in the workplace.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-number">02</div>
+                    <h3>Certification That Counts</h3>
+                    <p>Our certifications carry verifiable digital IDs and QR codes for instant validation. Employers
+                        trust EduASK credentials because they represent real skill.</p>
+                </div>
+                <div class="why-card">
+                    <div class="why-number">03</div>
+                    <h3>Personalized Roadmaps</h3>
+                    <p>Tell us your goal — whether it's a cloud engineer role or a data science career — and we'll
+                        generate a step-by-step learning path custom-tailored to you.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== FEATURED COURSE: Artificial Intelligence & ML ========== -->
+    <section class="featured-course section-padding" id="ai-ml-course">
+        <div class="container">
+            <div class="featured-card">
+                <div class="fc-content">
+                    <div class="fc-badge">Flagship Certification</div>
+                    <h2 class="fc-title">Artificial Intelligence & Machine Learning with Python</h2>
+                    <p class="fc-subtitle">Master the core pillars of modern tech. A comprehensive, 10-chapter journey from
+                        foundations to expert-level model deployment.</p>
+
+                    <div class="fc-price-tag">
+                        <span class="currency">₹</span>9
+                        <span class="price-type">All-Inclusive Lifetime Access</span>
+                    </div>
+
+                    <div class="fc-benefits-grid">
+                        <div class="fc-benefit">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Industry Ready Curriculum</span>
+                        </div>
+                        <div class="fc-benefit">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Gamified Learning Flow</span>
+                        </div>
+                        <div class="fc-benefit">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Self-Paced Learning Scenario</span>
+                        </div>
+                        <div class="fc-benefit">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Immediate Digital Certification</span>
+                        </div>
+                        <div class="fc-benefit">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Verified Global Credentials</span>
+                        </div>
+                        <div class="fc-benefit">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="3">
+                                <polyline points="20 6 9 17 4 12" />
+                            </svg>
+                            <span>Job-Ready Portfolio Projects</span>
+                        </div>
+                    </div>
+
+                    <button id="enroll-now-btn" class="btn btn-primary btn-large">Enroll Now & Start Mastery</button>
+                </div>
+                <div class="fc-visual">
+                    <div class="logo-illustration">
+                        <div class="eduask-brand-large">
+                            <svg class="logo-svg-large" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <path d="M24 38 C24 38 6 34 6 18 L6 10 C6 10 14 8 24 14 C34 8 42 10 42 10 L42 18 C42 34 24 38 24 38Z" fill="url(#bookGradLarge)" stroke="#0d47a1" stroke-width="1.5" stroke-linejoin="round" />
+                                <line x1="24" y1="14" x2="24" y2="38" stroke="#0d47a1" stroke-width="1.5" stroke-linecap="round" />
+                                <path d="M24 6 L19 13 L22 13 L22 22 L26 22 L26 13 L29 13 Z" fill="#ffb300" />
+                                <rect x="18" y="4" width="12" height="3" rx="1.5" fill="#0d47a1" />
+                                <defs>
+                                    <linearGradient id="bookGradLarge" x1="6" y1="10" x2="42" y2="38">
+                                        <stop offset="0%" stop-color="#e3f2fd" />
+                                        <stop offset="100%" stop-color="#bbdefb" />
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                            <span class="logo-text-large">Edu<span class="logo-highlight">ASK</span></span>
+                        </div>
+                        <img src="https://raw.githubusercontent.com/python/pythondotorg/master/static/community_logos/python-logo-generic.svg" alt="Python Logo" class="python-section-logo">
+                        
+                        <div class="sample-cert-visual">
+                            <div class="certificate-preview mini-cert-preview">
+                                <div class="cert-ornament-tl"></div>
+                                <div class="cert-ornament-br"></div>
+                                <div class="cert-inner">
+                                    <div class="cert-header-area">
+                                        <svg class="cert-logo-icon" viewBox="0 0 48 48" width="24" height="24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                            <path d="M24 38 C24 38 6 34 6 18 L6 10 C6 10 14 8 24 14 C34 8 42 10 42 10 L42 18 C42 34 24 38 24 38Z" fill="#e3f2fd" stroke="#0d47a1" stroke-width="1.5" stroke-linejoin="round" />
+                                            <line x1="24" y1="14" x2="24" y2="38" stroke="#0d47a1" stroke-width="1.5" stroke-linecap="round" />
+                                            <path d="M24 6 L19 13 L22 13 L22 22 L26 22 L26 13 L29 13 Z" fill="#ffb300" />
+                                            <rect x="18" y="4" width="12" height="3" rx="1.5" fill="#0d47a1" />
+                                        </svg>
+                                        <div class="cert-brand-text">EduASK</div>
+                                        <div class="cert-type">CERTIFICATE OF COMPLETION</div>
+                                    </div>
+                                    <div class="cert-body-area">
+                                        <div class="cert-presented">This is proudly presented to</div>
+                                        <div class="cert-recipient">ADITYA VERMA</div>
+                                        <div class="cert-for">for successfully completing the requirements of</div>
+                                        <div class="cert-course">AI & Machine Learning with Python</div>
+                                    </div>
+                                    <div class="cert-details-area">
+                                        <div class="cert-meta-col">
+                                            <div class="cert-meta-item"><strong>ID:</strong> EA-AI-ML-2026</div>
+                                        </div>
+                                        <div class="cert-sig-col">
+                                            <div class="cert-sig-name">EduASK Elite</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== KNOWLEDGE NAVIGATION / ABOUT SECTION ========== -->
+    <section class="knowledge section-padding bg-light" id="about">
+        <div class="container">
+            <div class="text-center">
+
+                <h2 class="section-title">Navigate Your Learning Journey</h2>
+                <p class="section-description">EduASK acts as your compass — curating the most valuable resources and
+                    building structured learning paths so you can focus on what truly matters for your career.</p>
+            </div>
+            <div class="features-grid mt-5">
+                <div class="feature-card">
+                    <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" />
+                            <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" />
+                        </svg></div>
+                    <h3>Structured Curriculum</h3>
+                    <p>Follow expertly designed learning paths from fundamentals to advanced topics with logical, clear
+                        progression.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <polygon
+                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2" />
+                        </svg></div>
+                    <h3>Curated Resources</h3>
+                    <p>We handpick the best materials — articles, videos, projects — saving you hundreds of hours of
+                        aimless browsing.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+                        </svg></div>
+                    <h3>Career Readiness</h3>
+                    <p>Build skills and certifications directly aligned with what hiring managers and recruiters are
+                        actively seeking.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10" />
+                            <polyline points="12 6 12 12 16 14" />
+                        </svg></div>
+                    <h3>Learn at Your Pace</h3>
+                    <p>All courses are fully self-paced with lifetime access. Learn on your schedule, from anywhere in
+                        the world.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
+                            <circle cx="9" cy="7" r="4" />
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75" />
+                        </svg></div>
+                    <h3>Community Support</h3>
+                    <p>Join a thriving community of learners, mentors, and industry professionals who share your
+                        ambition.</p>
+                </div>
+                <div class="feature-card">
+                    <div class="feature-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
+                            <line x1="8" y1="21" x2="16" y2="21" />
+                            <line x1="12" y1="17" x2="12" y2="21" />
+                        </svg></div>
+                    <h3>Hands-On Projects</h3>
+                    <p>Every course includes practical, real-world projects that build your portfolio and prepare you
+                        for the job.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== TESTIMONIALS ========== -->
+    <section class="testimonials section-padding">
+        <div class="container">
+            <div class="text-center">
+
+                <h2 class="section-title">Trusted by Ambitious Students</h2>
+                <p class="section-description">Hear from real learners who have transformed their careers through
+                    EduASK's certifications and curated learning paths.</p>
+            </div>
+            <div class="testimonials-grid mt-5">
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">"EduASK's structured approach made it incredibly easy for me to prepare
+                        for and earn my AWS Cloud Practitioner certification. The resources are top-notch and the
+                        learning path was crystal clear."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">RK</div>
+                        <div><strong>Rahul Kumar</strong><span>Cloud Engineer</span></div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">"I went from zero coding knowledge to earning a full-stack development
+                        certification in under 6 months. EduASK gave me the roadmap and confidence I needed to succeed."
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">PS</div>
+                        <div><strong>Priya Sharma</strong><span>Software Developer</span></div>
+                    </div>
+                </div>
+                <div class="testimonial-card">
+                    <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+                    <p class="testimonial-text">"The curated learning paths saved me hundreds of hours. Instead of
+                        aimlessly browsing, I had a clear direction. The certifications gave me credibility in job
+                        interviews."</p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">AM</div>
+                        <div><strong>Arjun Mehta</strong><span>Data Analyst</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ========== CTA SECTION ========== -->
+    <section class="cta-section">
+        <div class="container text-center">
+            <h2>Ready to Invest in Your Future?</h2>
+            <p>Join thousands of learners already building skills, earning certifications, and advancing their careers
+                with EduASK's 20+ expert-led courses.</p>
+            <a href="certifications.html" class="btn btn-primary btn-cta">Get Certified Today</a>
+        </div>
+    </section>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer" id="terms">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <svg class="logo-svg" viewBox="0 0 48 48" width="36" height="36" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M24 38 C24 38 6 34 6 18 L6 10 C6 10 14 8 24 14 C34 8 42 10 42 10 L42 18 C42 34 24 38 24 38Z"
+                            fill="#1e3a5f" stroke="#fff" stroke-width="1.5" stroke-linejoin="round" />
+                        <line x1="24" y1="14" x2="24" y2="38" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M24 6 L19 13 L22 13 L22 22 L26 22 L26 13 L29 13 Z" fill="#ffb300" />
+                        <rect x="18" y="4" width="12" height="3" rx="1.5" fill="#fff" />
+                    </svg>
+                    <span>Edu<span class="logo-highlight-footer">ASK</span></span>
+                </div>
+                <p>Empowering students to build critical skills, earn valuable certifications, and navigate their path
+                    to a successful future. Your career starts here.</p>
+            </div>
+            <div class="footer-links-group">
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="certifications.html">Certifications</a></li>
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="index.html#courses">Learning Paths</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="terms.html">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 EduASK. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script src="enrollment.js"></script>
+    <script src="script.js"></script>
 </body>
 
 </html>

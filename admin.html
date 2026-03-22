@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduASK Admin Portal — Elite</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, setDoc, getDocs, getDoc, collection, query, where, serverTimestamp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8yV74UJ5gWhczUmq9MT0jpr-vHpyebfM",
+            authDomain: "qilin-8255a.firebaseapp.com",
+            projectId: "qilin-8255a",
+            storageBucket: "qilin-8255a.firebasestorage.app",
+            messagingSenderId: "491492633338",
+            appId: "1:491492633338:web:accfe9bac30bd868d9b743"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        // Export to window for access in conventional scripts
+        window.eduSync = { db, doc, setDoc, getDocs, getDoc, collection, query, where, serverTimestamp };
+    </script>
+
+    <style>
+        :root {
+            --bg: #F8FAFC;
+            --surface: #FFFFFF;
+            --primary: #8A2BE2;
+            --primary-hover: #7B26CB;
+            --text: #0F172A;
+            --text-muted: #64748B;
+            --border: #E2E8F0;
+            --shadow: 0 10px 25px rgba(0, 0, 0, 0.05);
+            --font-h: 'Outfit', sans-serif;
+            --font-b: 'Inter', sans-serif;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body { font-family: var(--font-b); background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
+
+        /* Access Gate */
+        #access-gate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: var(--bg); display: flex; align-items: center; justify-content: center;
+            z-index: 1000; transition: opacity 0.5s ease;
+        }
+        .gate-card {
+            background: var(--surface); padding: 3rem; border-radius: 24px;
+            box-shadow: var(--shadow); width: 100%; max-width: 400px;
+            text-align: center; border: 1px solid var(--border);
+        }
+        .gate-card h2 { font-family: var(--font-h); font-size: 1.8rem; margin-bottom: 1rem; }
+        .gate-card p { color: var(--text-muted); margin-bottom: 2rem; }
+        .input-group { position: relative; margin-bottom: 1.5rem; }
+        .gate-input {
+            width: 100%; padding: 1rem 1.25rem; border-radius: 12px;
+            border: 2px solid var(--border); font-family: var(--font-b); font-size: 1rem;
+            transition: all 0.2s; outline: none; text-align: center; letter-spacing: 4px;
+        }
+        .gate-input:focus { border-color: var(--primary); box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.1); }
+        .gate-btn {
+            width: 100%; padding: 1rem; border-radius: 12px; border: none;
+            background: var(--primary); color: white; font-weight: 700;
+            cursor: pointer; transition: all 0.2s; font-family: var(--font-h);
+        }
+        .gate-btn:hover { background: var(--primary-hover); transform: translateY(-2px); }
+
+        /* Admin Dashboard (Hidden initially) */
+        #admin-dash {
+            opacity: 0; visibility: hidden; transition: opacity 0.6s ease;
+            max-width: 1100px; margin: 0 auto; padding: 4rem 2rem;
+        }
+        body.unlocked #admin-dash { opacity: 1; visibility: visible; }
+        body.unlocked #access-gate { opacity: 0; pointer-events: none; }
+
+        header { margin-bottom: 4rem; text-align: center; }
+        header img { width: 60px; margin-bottom: 1.5rem; }
+        h1 { font-family: var(--font-h); font-size: 2.5rem; margin-bottom: 0.5rem; letter-spacing: -1px; }
+        .subtitle { color: var(--text-muted); font-size: 1.1rem; }
+
+        /* Actions */
+        .admin-actions { display: flex; gap: 1rem; margin-bottom: 3rem; justify-content: center; }
+        .btn-action {
+            display: inline-flex; align-items: center; gap: 0.75rem;
+            padding: 1rem 2rem; border-radius: 14px; border: none;
+            background: var(--primary); color: white; font-weight: 700;
+            cursor: pointer; transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            font-family: var(--font-h); font-size: 1rem; box-shadow: 0 5px 15px rgba(138, 43, 226, 0.2);
+        }
+        .btn-action:hover { background: var(--primary-hover); transform: translateY(-3px); box-shadow: 0 10px 25px rgba(138, 43, 226, 0.3); }
+        .btn-action.secondary { background: white; color: var(--text); border: 1px solid var(--border); box-shadow: none; }
+        .btn-action.secondary:hover { background: #f1f5f9; }
+
+        /* Form Area */
+        .control-panel { display: none; margin-bottom: 4rem; animation: slideDown 0.4s ease; }
+        .control-panel.active { display: block; }
+        
+        .panel-card {
+            background: var(--surface); border-radius: 20px; box-shadow: var(--shadow);
+            border: 1px solid var(--border); padding: 2.5rem;
+        }
+
+        .form-grid { display: flex; flex-direction: column; gap: 1.5rem; }
+        .field { display: flex; flex-direction: column; gap: 0.5rem; }
+        .field label { font-size: 0.85rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.5px; }
+        .field input {
+            padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid var(--border);
+            font-family: var(--font-b); font-size: 1rem; outline: none; transition: 0.2s;
+        }
+        .field input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(138, 43, 226, 0.1); }
+
+        .result-box {
+            background: #F1F5F9; border-radius: 12px; padding: 1.5rem; margin-top: 1.5rem;
+            display: none; border-left: 4px solid var(--primary);
+        }
+        .credential-item { display: flex; justify-content: space-between; margin-bottom: 0.5rem; }
+        .credential-val { font-family: monospace; font-weight: 700; color: var(--primary); }
+
+        /* Student Checker */
+        .search-row { display: flex; gap: 1rem; margin-bottom: 1.5rem; }
+        .search-input { flex: 1; padding: 0.85rem 1rem; border-radius: 10px; border: 1px solid var(--border); outline: none; }
+
+        /* Student List Table */
+        .table-container { overflow-x: auto; margin-top: 2rem; border-radius: 12px; border: 1px solid var(--border); }
+        table { width: 100%; border-collapse: collapse; background: white; }
+        th { background: #F8FAFC; padding: 1rem; text-align: left; font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; border-bottom: 1px solid var(--border); }
+        td { padding: 1rem; border-bottom: 1px solid var(--border); font-size: 0.9rem; }
+        .copy-btn { padding: 4px 8px; border-radius: 4px; border: 1px solid var(--border); background: #f8fafc; cursor: pointer; font-size: 0.7rem; }
+
+        .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1.5rem; margin-top: 4rem; }
+        .stat-card { background: var(--surface); padding: 1.5rem; border-radius: 16px; border: 1px solid var(--border); }
+        .stat-label { font-size: 0.8rem; font-weight: 600; color: var(--text-muted); margin-bottom: 0.5rem; }
+        .stat-value { font-family: var(--font-h); font-size: 1.5rem; font-weight: 800; }
+
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Loader */
+        .spinner { border: 2px solid rgba(0,0,0,0.1); border-left-color: #fff; border-radius: 50%; width: 16px; height: 16px; animation: spin 1s linear infinite; display: inline-block; vertical-align: middle; margin-right: 8px; }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <!-- Access Gate -->
+    <div id="access-gate">
+        <div class="gate-card">
+            <img src="logo.png" alt="EduASK" style="width: 50px; margin-bottom: 1.5rem;">
+            <h2>Admin Portal</h2>
+            <p>Enter your authorization code to proceed</p>
+            <div class="input-group">
+                <input type="password" id="access-code" class="gate-input" placeholder="••••••" onkeydown="if(event.key==='Enter') verifyCode()">
+            </div>
+            <button class="gate-btn" onclick="verifyCode()">Initialize Access</button>
+            <p id="error-msg" style="color: #EF4444; font-size: 0.85rem; margin-top: 1rem; display: none;">Invalid code. Please try again.</p>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="admin-dash">
+        <header>
+            <a href="index.html"><img src="logo.png" alt="EduASK"></a>
+            <h1>Academy Control Center</h1>
+            <p class="subtitle">Enrollment Management & Institutional Oversight</p>
+        </header>
+
+        <main>
+            <div class="admin-actions">
+                <button class="btn-action" onclick="showPanel('enroll-panel')">
+                    Add a Enrollment
+                </button>
+                <button class="btn-action secondary" onclick="showPanel('check-panel'); clearSearch();">
+                    Student Records
+                </button>
+            </div>
+
+            <!-- Add Enrollment Panel -->
+            <div id="enroll-panel" class="control-panel">
+                <div class="panel-card">
+                    <h3 style="font-family: var(--font-h); font-size: 1.4rem; margin-bottom: 1.5rem;">Register New Student</h3>
+                    <div class="form-grid">
+                        <div class="field">
+                            <label>Student Full Name</label>
+                            <input type="text" id="node-name" placeholder="e.g. Aditya Verma">
+                        </div>
+                        <button class="btn-action" id="enroll-btn" onclick="registerStudent()" style="width: 100%; justify-content: center;">
+                             Generate Credentials
+                        </button>
+                    </div>
+
+                    <div id="enroll-result" class="result-box">
+                        <h4 style="margin-bottom: 1rem; font-size: 0.9rem;">Credentials Generated Successfully:</h4>
+                        <div class="credential-item">
+                            <span>Enrollment ID:</span>
+                            <span class="credential-val" id="res-id">---</span>
+                        </div>
+                        <div class="credential-item">
+                            <span>Access Password:</span>
+                            <span class="credential-val" id="res-pass">---</span>
+                        </div>
+                        <p style="font-size: 0.75rem; color: var(--text-muted); margin-top: 1rem;">Share these securely with the student. They unique pair is mandatory for access.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Checker/List Panel -->
+            <div id="check-panel" class="control-panel">
+                <div class="panel-card">
+                    <h3 style="font-family: var(--font-h); font-size: 1.4rem; margin-bottom: 1.5rem;">Student Lookup & Audit</h3>
+                    
+                    <div class="search-row">
+                        <input type="text" id="lookup-id" class="search-input" placeholder="Search by Enrollment ID or Name..." onkeydown="if(event.key==='Enter') searchStudents()">
+                        <button class="btn-action" onclick="searchStudents()" style="box-shadow: none;">Search</button>
+                    </div>
+
+                    <div class="table-container">
+                        <table id="student-table">
+                            <thead>
+                                <tr>
+                                    <th>Name</th>
+                                    <th>Enrollment ID</th>
+                                    <th>Password</th>
+                                    <th>Enrolled Date</th>
+                                </tr>
+                            </thead>
+                            <tbody id="student-list-body">
+                                <tr>
+                                    <td colspan="4" style="text-align: center; color: var(--text-muted);">Enter a name or ID above to search records...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-label">Total Enrollments</div>
+                    <div id="stat-total" class="stat-value">---</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Active Certifications</div>
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <div id="stat-certs" class="stat-value">0</div>
+                        <button onclick="resetCerts()" style="background: none; border: 1px solid #ef4444; color: #ef4444; padding: 2px 8px; border-radius: 6px; font-size: 0.6rem; cursor: pointer;">Reset</button>
+                    </div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-label">Platform Status</div>
+                    <div class="stat-value" style="color: #10B981;">Secured</div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const AUTH_CODE = "#$5$#699";
+
+        function verifyCode() {
+            const input = document.getElementById('access-code');
+            const error = document.getElementById('error-msg');
+            
+            if (input.value === AUTH_CODE) {
+                document.body.classList.add('unlocked');
+                setTimeout(() => {
+                    document.getElementById('access-gate').style.display = 'none';
+                    syncStats();
+                }, 500);
+            } else {
+                error.style.display = 'block';
+                input.value = '';
+                input.focus();
+            }
+        }
+
+        function showPanel(id) {
+            document.querySelectorAll('.control-panel').forEach(p => p.classList.remove('active'));
+            document.getElementById(id).classList.add('active');
+        }
+
+        // --- Firebase Integration Logic ---
+
+        async function registerStudent() {
+            const name = document.getElementById('node-name').value.trim();
+            const btn = document.getElementById('enroll-btn');
+            if(!name) return alert("Please enter student name");
+
+            btn.disabled = true;
+            btn.innerHTML = '<span class="spinner"></span> Processing...';
+
+            if(!window.eduSync) return alert("Firebase is still initializing. Please wait a moment.");
+
+            try {
+                let enrollId = '';
+                let isUnique = false;
+                
+                // Ensure unique ID
+                while (!isUnique) {
+                    enrollId = 'EDU-' + Math.floor(100000 + Math.random() * 900000);
+                    const docRef = window.eduSync.doc(window.eduSync.db, "students", enrollId);
+                    const docSnap = await window.eduSync.getDoc(docRef);
+                    if (!docSnap.exists()) isUnique = true;
+                }
+
+                const password = Math.random().toString(36).slice(-8);
+
+                await window.eduSync.setDoc(window.eduSync.doc(window.eduSync.db, "students", enrollId), {
+                    name,
+                    enrollId,
+                    password,
+                    createdAt: window.eduSync.serverTimestamp()
+                });
+
+                document.getElementById('res-id').textContent = enrollId;
+                document.getElementById('res-pass').textContent = password;
+                document.getElementById('enroll-result').style.display = 'block';
+                document.getElementById('node-name').value = '';
+                
+                // Refresh total stats
+                syncStats();
+            } catch (e) {
+                console.error(e);
+                alert("Cloud Sync Error: " + (e.message || "Unknown error") + "\n\n1. Ensure you are online.\n2. Ensure Firestore is created in the console.");
+            } finally {
+                btn.disabled = false;
+                btn.textContent = 'Generate Credentials';
+            }
+        }
+
+        function clearSearch() {
+            document.getElementById('lookup-id').value = '';
+            document.getElementById('student-list-body').innerHTML = '<tr><td colspan="4" style="text-align: center; color: var(--text-muted);">Enter a name or ID above to search records...</td></tr>';
+        }
+
+        async function searchStudents() {
+            const input = document.getElementById('lookup-id').value.trim();
+            const body = document.getElementById('student-list-body');
+            
+            if(!input) return alert("Please enter a name or Enrollment ID to search.");
+            if(!window.eduSync) return alert("Firebase is still initializing...");
+
+            body.innerHTML = '<tr><td colspan="4" style="text-align: center;"><span class="spinner" style="border-left-color: var(--primary)"></span> Searching database...</td></tr>';
+
+            try {
+                let q;
+                // Check if it looks like an ID (EDU-) or Name
+                if (input.toUpperCase().startsWith('EDU-')) {
+                    // ID Search (Exact)
+                    q = window.eduSync.query(
+                        window.eduSync.collection(window.eduSync.db, "students"),
+                        window.eduSync.where("enrollId", "==", input.toUpperCase())
+                    );
+                } else {
+                    // Name Search (Prefix case-insensitive range)
+                    // Note: Firestore is case-sensitive, so we assume names are stored as entered.
+                    // For better results, we search as prefix.
+                    q = window.eduSync.query(
+                        window.eduSync.collection(window.eduSync.db, "students"),
+                        window.eduSync.where("name", ">=", input),
+                        window.eduSync.where("name", "<=", input + '\uf8ff')
+                    );
+                }
+
+                const snap = await window.eduSync.getDocs(q);
+                body.innerHTML = '';
+
+                if (snap.empty) {
+                    body.innerHTML = '<tr><td colspan="4" style="text-align: center;">No matching records found.</td></tr>';
+                    return;
+                }
+
+                snap.forEach(doc => {
+                    const data = doc.data();
+                    const date = data.createdAt ? new Date(data.createdAt.seconds * 1000).toLocaleDateString() : 'Pending';
+                    body.innerHTML += `
+                        <tr>
+                            <td style="font-weight: 600;">${data.name}</td>
+                            <td class="credential-val">${data.enrollId}</td>
+                            <td>${data.password}</td>
+                            <td style="color: var(--text-muted); font-size: 0.8rem;">${date}</td>
+                        </tr>
+                    `;
+                });
+            } catch (e) {
+                console.error(e);
+                body.innerHTML = '<tr><td colspan="4" style="text-align: center; color: #EF4444;">Search failed. Check cloud connection.</td></tr>';
+            }
+        }
+
+        async function lookupStudent() {
+            // Deprecated by searchStudents() but kept as alias if needed
+            searchStudents();
+        }
+
+        async function syncStats() {
+            try {
+                const q = window.eduSync.query(window.eduSync.collection(window.eduSync.db, "students"));
+                const snap = await window.eduSync.getDocs(q);
+                document.getElementById('stat-total').textContent = snap.size;
+                
+                const statRef = window.eduSync.doc(window.eduSync.db, "stats", "global");
+                const statSnap = await window.eduSync.getDoc(statRef);
+                if(statSnap.exists()) {
+                    document.getElementById('stat-certs').textContent = statSnap.data().activeCertifications || 0;
+                } else {
+                    // Initialize if not exists
+                    await window.eduSync.setDoc(statRef, { activeCertifications: 0 });
+                }
+            } catch (e) {}
+        }
+
+        async function resetCerts() {
+            if(!confirm("Reset certification counter to zero?")) return;
+            try {
+                const statRef = window.eduSync.doc(window.eduSync.db, "stats", "global");
+                await window.eduSync.setDoc(statRef, { activeCertifications: 0 }, { merge: true });
+                syncStats();
+            } catch (e) {
+                alert("Reset failed.");
+            }
+        }
+
+        window.onload = () => {
+            document.getElementById('access-code').focus();
+        };
+    </script>
+</body>
+</html>

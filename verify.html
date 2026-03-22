@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Verify Certification — EduASK Premium</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --primary: #0f172a;
+            --accent: #2563eb;
+            --white: #ffffff;
+            --border: #e2e8f0;
+            --success: #10b981;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            font-family: 'Inter', sans-serif;
+            color: var(--primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 2rem;
+        }
+
+        .verify-card {
+            background: var(--white);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 4rem 3rem;
+            max-width: 600px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.6s ease-out;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            background: #ecfdf5;
+            color: var(--success);
+            padding: 0.5rem 1.5rem;
+            border-radius: 99px;
+            font-weight: 700;
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 2rem;
+            border: 1px solid #d1fae5;
+        }
+
+        .status-badge svg {
+            margin-right: 0.5rem;
+        }
+
+        h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: var(--primary);
+        }
+
+        .detail-group {
+            text-align: left;
+            margin-top: 3rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .detail-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .label {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .value {
+            font-weight: 600;
+            color: var(--primary);
+        }
+
+        .id-badge {
+            font-family: monospace;
+            background: #f1f5f9;
+            padding: 0.25rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        .btn {
+            display: block;
+            width: 100%;
+            background: var(--primary);
+            color: var(--white);
+            text-decoration: none;
+            padding: 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            margin-top: 3rem;
+            transition: all 0.2s;
+        }
+
+        .btn:hover {
+            background: #1e293b;
+            transform: translateY(-2px);
+        }
+
+        .logo {
+            font-family: 'Outfit', sans-serif;
+            font-weight: 800;
+            font-size: 1.5rem;
+            margin-bottom: 3rem;
+            display: block;
+            text-decoration: none;
+            color: var(--primary);
+        }
+
+        .logo span {
+            color: var(--accent);
+        }
+
+        @media (max-width: 480px) {
+            .verify-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .detail-row {
+                flex-direction: column;
+            }
+
+            .value {
+                margin-top: 0.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="verify-card">
+        <a href="index.html" class="logo">Edu<span>ASK</span></a>
+
+        <div class="status-badge">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+            Verified Authentic
+        </div>
+
+        <h1>Credential Verification</h1>
+        <p style="color: #64748b;">This professional certification has been issued by EduASK and is verified as a valid
+            credential in our global database.</p>
+
+        <div class="detail-group">
+            <div class="detail-row">
+                <span class="label">Certificate Recipient</span>
+                <span class="value" id="disp-name">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Program Completion</span>
+                <span class="value" id="disp-course">Loading...</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Issue Date</span>
+                <span class="value" id="disp-date">Verified Item</span>
+            </div>
+            <div class="detail-row">
+                <span class="label">Credential ID</span>
+                <span class="value id-badge" id="disp-id">ASK-XXXX-XXXX</span>
+            </div>
+        </div>
+
+        <a href="certifications.html" class="btn">View All Programs</a>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+
+            // In a real system, we would fetch the data from a backend using the ID.
+            // For this implementation, we extract from the URL for demonstration.
+            const name = params.get('name') || "Aditya Verma";
+            const course = params.get('course') || "Professional Mastery";
+            const id = params.get('id') || "ASK-PRO-0000";
+
+            document.getElementById('disp-name').textContent = name;
+            document.getElementById('disp-course').textContent = course;
+            document.getElementById('disp-id').textContent = id;
+
+            const now = new Date();
+            document.getElementById('disp-date').textContent = now.toLocaleDateString('en-US', { day: 'numeric', month: 'long', year: 'numeric' });
+        });
+    </script>
+</body>
+
+</html>

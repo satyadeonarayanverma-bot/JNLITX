@@ -1,0 +1,628 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professional Certification Programs — EduASK Premium</title>
+    <!-- Google Fonts: Outift & Inter for a premium feel -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <style>
+        :root {
+            --bg-light: #f8fafc;
+            --card-bg: #ffffff;
+            --card-border: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #475569;
+            --btn-bg: #0f172a;
+            --btn-hover: #1e293b;
+            --accent-blue: #2563eb;
+            --glass-bg: rgba(255, 255, 255, 0.7);
+            --glass-border: rgba(255, 255, 255, 0.4);
+        }
+
+        body {
+            background-color: var(--bg-light);
+            margin: 0;
+            padding: 0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .premium-hero {
+            padding: 8rem 0 4rem;
+            text-align: center;
+            background: #fff;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .premium-hero h1 {
+            font-family: 'Outfit', sans-serif;
+            font-size: clamp(2.5rem, 6vw, 4rem);
+            font-weight: 800;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            letter-spacing: -1.5px;
+        }
+
+        .premium-hero p {
+            max-width: 700px;
+            margin: 0 auto;
+            color: var(--text-secondary);
+            font-size: 1.2rem;
+            line-height: 1.6;
+        }
+
+        .courses-container {
+            padding: 4rem 2rem;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .courses-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2.5rem;
+        }
+
+        @media (max-width: 1100px) {
+            .courses-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .courses-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .course-card-godly {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            position: relative;
+        }
+
+        .course-card-godly:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+            border-color: var(--accent-blue);
+        }
+
+        .ultimate-title {
+            font-family: 'Outfit', sans-serif;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+        }
+
+        .course-desc {
+            color: var(--text-secondary);
+            font-size: 1rem;
+            line-height: 1.6;
+            margin-bottom: 2rem;
+            flex-grow: 1;
+        }
+
+        .enroll-btn-ultimate {
+            width: 100%;
+            background: var(--btn-bg);
+            color: #fff;
+            border: none;
+            padding: 1.25rem;
+            border-radius: 12px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            transition: background 0.2s;
+        }
+
+        .enroll-btn-ultimate:hover {
+            background: var(--btn-hover);
+        }
+
+        .enroll-btn-ultimate svg {
+            transition: transform 0.2s;
+        }
+
+        .enroll-btn-ultimate:hover svg {
+            transform: translateX(5px);
+        }
+
+        /* Navbar & Footer tweaks */
+        nav {
+            padding: 1.5rem 0;
+            background: #fff;
+            border-bottom: 1px solid #eee;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        footer {
+            background: #0f172a;
+            color: #fff;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        /* ===== Chatbot Popup ===== */
+        .bot-popup {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            width: 340px;
+            background: #fff;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            padding: 1.5rem;
+            display: flex;
+            gap: 1.25rem;
+            align-items: center;
+            border: 1px solid var(--card-border);
+            z-index: 9999;
+            transform: translateX(120%);
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            overflow: hidden;
+        }
+        .bot-popup.active {
+            transform: translateX(0);
+        }
+        .bot-popup-avatar {
+            width: 54px;
+            height: 54px;
+            background: #fff;
+            color: #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.15);
+            border: 2px solid #fff;
+        }
+        .bot-popup-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .bot-popup-content h4 {
+            font-family: 'Outfit', sans-serif;
+            margin: 0 0 4px 0;
+            font-size: 1rem;
+            color: var(--text-primary);
+        }
+        .bot-popup-content p {
+            margin: 0;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.4;
+        }
+        .bot-popup-close {
+            position: absolute;
+            top: 10px;
+            right: 12px;
+            color: #94a3b8;
+            font-size: 1.2rem;
+            cursor: pointer;
+            line-height: 1;
+            transition: color 0.2s;
+        }
+        .bot-popup-close:hover {
+            color: #0f172a;
+        }
+        @media (max-width: 480px) {
+            .bot-popup {
+                width: calc(100% - 40px);
+                bottom: 20px;
+                right: 20px;
+                padding: 1.25rem;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ========== NAVBAR ========== -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-container">
+            <a href="index.html" class="logo-container">
+                <svg class="logo-svg" viewBox="0 0 48 48" width="44" height="44" fill="none"
+                    xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M24 38 C24 38 6 34 6 18 L6 10 C6 10 14 8 24 14 C34 8 42 10 42 10 L42 18 C42 34 24 38 24 38Z"
+                        fill="url(#bookGrad)" stroke="#0d47a1" stroke-width="1.5" stroke-linejoin="round" />
+                    <line x1="24" y1="14" x2="24" y2="38" stroke="#0d47a1" stroke-width="1.5" stroke-linecap="round" />
+                    <path d="M24 6 L19 13 L22 13 L22 22 L26 22 L26 13 L29 13 Z" fill="#ffb300" />
+                    <rect x="18" y="4" width="12" height="3" rx="1.5" fill="#0d47a1" />
+                    <defs>
+                        <linearGradient id="bookGrad" x1="6" y1="10" x2="42" y2="38">
+                            <stop offset="0%" stop-color="#e3f2fd" />
+                            <stop offset="100%" stop-color="#bbdefb" />
+                        </linearGradient>
+                    </defs>
+                </svg>
+                <span class="logo-text">Edu<span class="logo-highlight">ASK</span></span>
+            </a>
+            <ul class="nav-links" id="nav-links">
+                <li><a href="index.html">Home</a></li>
+                <li><a href="certifications.html" class="active-link">Certifications</a></li>
+
+                <li><a href="about.html">About Us</a></li>
+                <li><a href="faq.html">FAQ</a></li>
+            </ul>
+            <button class="mobile-menu-btn" aria-label="Toggle navigation menu" id="mobile-menu-btn">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mobile-nav" id="mobile-nav">
+        <ul>
+            <li><a href="index.html" class="mobile-link">Home</a></li>
+            <li><a href="certifications.html" class="mobile-link">Certifications</a></li>
+
+            <li><a href="about.html" class="mobile-link">About Us</a></li>
+            <li><a href="faq.html" class="mobile-link">FAQ</a></li>
+        </ul>
+    </div>
+
+    <header class="premium-hero">
+        <div class="container">
+            <h1>Elite Certification Programs</h1>
+            <p>Master the skills demanded by Fortune 500 tech giants. Our proprietary certification paths are designed
+                for professionals seeking distinguished mastery.</p>
+        </div>
+    </header>
+
+    <main class="courses-container">
+        <div class="courses-grid">
+            <!-- 20 Courses for scale and variety -->
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">AI & Machine Learning</h3>
+                <p class="course-desc">Neural networks, deep learning, and predictive modeling for the future of
+                    automation.</p>
+                <button class="enroll-btn-ultimate" data-course="AI & Machine Learning">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Cloud Computing</h3>
+                <p class="course-desc">Design scalable, vault-secured cloud systems using multi-region distributed
+                    strategies.</p>
+                <button class="enroll-btn-ultimate" data-course="Cloud Computing">Enroll Now <svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Cybersecurity</h3>
+                <p class="course-desc">Master ethical hacking, zero-trust security, and advanced network defense
+                    protocols.</p>
+                <button class="enroll-btn-ultimate" data-course="Cybersecurity">Enroll Now <svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Full Stack Development</h3>
+                <p class="course-desc">End-to-end engineering from architecting databases to pixel-perfect premium
+                    frontends.</p>
+                <button class="enroll-btn-ultimate" data-course="Full Stack Development">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Data Science</h3>
+                <p class="course-desc">Extract high-value insights from massive datasets using statistical analysis and
+                    Big Data.</p>
+                <button class="enroll-btn-ultimate" data-course="Data Science">Enroll Now <svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">DevOps Engineering</h3>
+                <p class="course-desc">Bridge development and operations with automated CI/CD pipelines and
+                    infrastructure as code.</p>
+                <button class="enroll-btn-ultimate" data-course="DevOps Engineering">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">UI/UX Design</h3>
+                <p class="course-desc">Craft human-centric digital experiences with Figma and advanced interaction
+                    psychology.</p>
+                <button class="enroll-btn-ultimate" data-course="UI/UX Design">Enroll Now <svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Blockchain Development</h3>
+                <p class="course-desc">Build decentralized logic and secure smart contracts for the future of Web3.</p>
+                <button class="enroll-btn-ultimate" data-course="Blockchain Development">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Prompt Engineering</h3>
+                <p class="course-desc">Master communication with LLMs like Gemini to generate world-class technical
+                    output.</p>
+                <button class="enroll-btn-ultimate" data-course="Prompt Engineering">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">DSA in Python</h3>
+                <p class="course-desc">Elegant algorithms and data structures optimized for interviews and
+                    high-performance apps.</p>
+                <button class="enroll-btn-ultimate" data-course="DSA in Python">Enroll Now <svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">DSA in Java</h3>
+                <p class="course-desc">Robust enterprise-grade data structures and complex algorithmic paradigm mastery.
+                </p>
+                <button class="enroll-btn-ultimate" data-course="DSA in Java">Enroll Now <svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Digital Marketing</h3>
+                <p class="course-desc">Strategic growth, performance analytics, and global brand positioning in tech.
+                </p>
+                <button class="enroll-btn-ultimate" data-course="Digital Marketing">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Product Management</h3>
+                <p class="course-desc">Orchestrate the entire lifecycle of multi-million dollar digital products.</p>
+                <button class="enroll-btn-ultimate" data-course="Product Management">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Internet of Things</h3>
+                <p class="course-desc">System architecture for connected sensor networks and edge-computing devices.</p>
+                <button class="enroll-btn-ultimate" data-course="Internet of Things">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Big Data Analytics</h3>
+                <p class="course-desc">High-speed processing of zetabytes using Hadoop, Spark, and advanced
+                    visualization.</p>
+                <button class="enroll-btn-ultimate" data-course="Big Data Analytics">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Android Development</h3>
+                <p class="course-desc">Native app architecture using Kotlin, Jetpack Compose, and Material Design 3.</p>
+                <button class="enroll-btn-ultimate" data-course="Android Development">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">iOS Development</h3>
+                <p class="course-desc">Premium Swift engineering for the Apple ecosystem with high-performance UI.</p>
+                <button class="enroll-btn-ultimate" data-course="iOS Development">Enroll Now <svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Azure Essentials</h3>
+                <p class="course-desc">Enterprise cloud dominance using Microsoft Azure global cloud fabric.</p>
+                <button class="enroll-btn-ultimate" data-course="Azure Essentials">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">CRM Strategy</h3>
+                <p class="course-desc">Operational excellence using Salesforce and high-impact customer relationship
+                    logic.</p>
+                <button class="enroll-btn-ultimate" data-course="CRM Strategy">Enroll Now <svg width="20" height="20"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+
+            <article class="course-card-godly">
+                <h3 class="ultimate-title">Web Fundamentals</h3>
+                <p class="course-desc">Mastering the core trio of HTML5, CSS3, and Modern JavaScript for the web.</p>
+                <button class="enroll-btn-ultimate" data-course="Web Fundamentals">Enroll Now <svg width="20"
+                        height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                        <polyline points="12 5 19 12 12 19"></polyline>
+                    </svg></button>
+            </article>
+        </div>
+    </main>
+
+    <!-- ========== FOOTER ========== -->
+    <footer class="footer">
+        <div class="container footer-content">
+            <div class="footer-brand">
+                <div class="footer-logo">
+                    <svg class="logo-svg" viewBox="0 0 48 48" width="36" height="36" fill="none"
+                        xmlns="http://www.w3.org/2000/svg">
+                        <path
+                            d="M24 38 C24 38 6 34 6 18 L6 10 C6 10 14 8 24 14 C34 8 42 10 42 10 L42 18 C42 34 24 38 24 38Z"
+                            fill="#1e3a5f" stroke="#fff" stroke-width="1.5" stroke-linejoin="round" />
+                        <line x1="24" y1="14" x2="24" y2="38" stroke="#fff" stroke-width="1.5" stroke-linecap="round" />
+                        <path d="M24 6 L19 13 L22 13 L22 22 L26 22 L26 13 L29 13 Z" fill="#ffb300" />
+                        <rect x="18" y="4" width="12" height="3" rx="1.5" fill="#fff" />
+                    </svg>
+                    <span>Edu<span class="logo-highlight-footer">ASK</span></span>
+                </div>
+                <p>Empowering students to build critical skills, earn valuable certifications, and navigate their path
+                    to a successful future. Your career starts here.</p>
+            </div>
+            <div class="footer-links-group">
+                <div class="footer-links">
+                    <h4>Quick Links</h4>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="certifications.html" class="active">Certifications</a></li>
+
+                        <li><a href="about.html">About Us</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-links">
+                    <h4>Resources</h4>
+                    <ul>
+                        <li><a href="index.html#courses">Learning Paths</a></li>
+                        <li><a href="#">Blog</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                        <li><a href="terms.html">Terms & Conditions</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 EduASK. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+
+
+
+
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script src="enrollment.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // --- Enroll button click: Trigger payment flow ---
+            const enrollButtons = document.querySelectorAll('.enroll-btn-ultimate');
+            enrollButtons.forEach(button => {
+                button.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const course = button.getAttribute('data-course');
+                    if (course && window.startEnrollmentFlow) {
+                        window.startEnrollmentFlow(9, course);
+                    }
+                });
+            });
+        });
+    </script>
+    <!-- ========== CHATBOT POPUP ========== -->
+    <div class="bot-popup" id="botPopup">
+        <span class="bot-popup-close" id="botPopupClose">&times;</span>
+        <div class="bot-popup-avatar">
+            <img src="images/chatbot-avatar.png" alt="Aditya Verma Avatar">
+        </div>
+        <div class="bot-popup-content">
+            <h4>Aditya Verma</h4>
+            <p>Confused? Let's find your perfect career path with a 20-question diagnostic.</p>
+        </div>
+    </div>
+
+    <script>
+        // Existing script logic included by reference (not modifying existing parts except at the end)
+        
+        // --- Chatbot Popup Logic ---
+        document.addEventListener('DOMContentLoaded', () => {
+            const botPopup = document.getElementById('botPopup');
+            const botPopupClose = document.getElementById('botPopupClose');
+
+            // Show popup after 5 seconds
+            setTimeout(() => {
+                if (!localStorage.getItem('bot_popup_closed')) {
+                    botPopup.classList.add('active');
+                }
+            }, 5000);
+
+            // Close popup
+            botPopupClose.addEventListener('click', (e) => {
+                e.stopPropagation();
+                botPopup.classList.remove('active');
+                localStorage.setItem('bot_popup_closed', 'true');
+            });
+
+            // Redirect to chatbot
+            botPopup.addEventListener('click', () => {
+                window.location.href = 'aditya-verma-bot.html';
+            });
+        });
+    </script>
+</body>
+
+</html>

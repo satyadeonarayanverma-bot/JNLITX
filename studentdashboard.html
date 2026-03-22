@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EduASK Elite — Course Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Firebase SDKs -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-app.js";
+        import { getFirestore, doc, getDoc, collection, query, where, getDocs } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-firestore.js";
+
+        const firebaseConfig = {
+            apiKey: "AIzaSyC8yV74UJ5gWhczUmq9MT0jpr-vHpyebfM",
+            authDomain: "qilin-8255a.firebaseapp.com",
+            projectId: "qilin-8255a",
+            storageBucket: "qilin-8255a.firebasestorage.app",
+            messagingSenderId: "491492633338",
+            appId: "1:491492633338:web:accfe9bac30bd868d9b743"
+        };
+
+        const app = initializeApp(firebaseConfig);
+        const db = getFirestore(app);
+
+        window.eduSync = { db, doc, getDoc, collection, query, where, getDocs };
+    </script>
+    
+    <style>
+        body { background: #050510; color: #fff; font-family: 'Inter', sans-serif; min-height: 100vh; }
+        
+        #student-gate {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5, 5, 16, 0.95); display: flex; align-items: center; justify-content: center;
+            z-index: 3000; backdrop-filter: blur(20px);
+        }
+        
+        .gate-card {
+            background: #fff; padding: 3rem; border-radius: 32px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5); width: 100%; max-width: 440px;
+            text-align: center; color: #0f172a;
+        }
+        
+        .gate-input {
+            width: 100%; padding: 0.85rem 1rem; border-radius: 12px;
+            border: 2px solid #F1F5F9; font-size: 1rem; margin-bottom: 1rem; outline: none;
+        }
+        
+        .gate-btn {
+            width: 100%; padding: 1rem; border-radius: 12px; border: none;
+            background: #8A2BE2; color: white; font-weight: 700; cursor: pointer;
+        }
+
+        .dashboard-container { padding: 80px 20px; max-width: 900px; margin: 0 auto; }
+        .dashboard-header { text-align: center; margin-bottom: 4rem; }
+        .dashboard-header h1 { font-family: 'Outfit'; font-size: 3rem; background: linear-gradient(135deg, #fff 0%, #00E5FF 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .hub-card { 
+            background: rgba(20, 20, 35, 0.6); backdrop-filter: blur(20px); border-radius: 20px; 
+            border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 1.25rem; overflow: hidden; transition: all 0.3s ease;
+        }
+        .hub-card.expanded { border-color: #00E5FF; }
+        .hub-btn { width: 100%; display: flex; align-items: center; gap: 1.5rem; padding: 1.5rem; background: none; border: none; cursor: pointer; color: white; text-align: left; }
+        .hub-icon { width: 48px; height: 48px; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 1.5rem; }
+        .hub-icon.python { background: #3776AB; }
+        .hub-icon.ai { background: #8B5CF6; }
+        .hub-info { flex: 1; }
+        .hub-title { font-family: 'Outfit'; font-size: 1.3rem; font-weight: 700; }
+        .hub-desc { font-size: 0.9rem; color: #9CA3AF; }
+        
+        .drawer { max-height: 0; overflow: hidden; transition: max-height 0.4s ease-out; }
+        .hub-card.expanded .drawer { max-height: 800px; padding-bottom: 2rem; }
+        
+        .ch-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; padding: 0 1.5rem; }
+        .ch-link { display: flex; align-items: center; gap: 0.85rem; padding: 1rem; background: rgba(255,255,255,0.03); border-radius: 12px; text-decoration: none; color: #fff; font-size: 0.9rem; border: 1px solid transparent; transition: 0.2s; }
+        .ch-link:hover { border-color: #00E5FF; background: rgba(255,255,255,0.06); }
+        .ch-n { width: 24px; height: 24px; border-radius: 6px; background: rgba(255, 255, 255, 0.05); color: #00E5FF; font-size: 0.75rem; font-weight: 800; display:flex; align-items:center; justify-content:center; }
+        
+        @media (max-width: 768px) { .ch-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+
+<body>
+    <div id="student-gate">
+        <div class="gate-card">
+            <h2 style="font-family: 'Outfit'; margin-bottom: 1.5rem;">Academy Login</h2>
+            <input type="text" id="enroll-id" class="gate-input" placeholder="Enrollment ID">
+            <input type="password" id="enroll-pass" class="gate-input" placeholder="Password">
+            <button class="gate-btn" id="login-btn" onclick="studentLogin()">Access Dashboard</button>
+            <p id="error-msg" style="color: #EF4444; font-size: 0.85rem; margin-top: 1rem; display: none;">Invalid credentials.</p>
+        </div>
+    </div>
+
+    <div class="dashboard-container">
+        <div class="dashboard-header">
+            <p style="color: #00E5FF; font-weight: 700; font-size: 0.9rem; text-transform: uppercase;">Student: <span id="display-name" style="color: #fff">---</span></p>
+            <h1>Academy Dashboard</h1>
+            <a href="index.html" style="color: #9CA3AF; text-decoration: none; font-size: 0.85rem;">← Back to Homepage</a>
+        </div>
+
+        <!-- Python Module -->
+        <div class="hub-card" id="python-hub">
+            <button class="hub-btn" onclick="toggleHub('python')">
+                <div class="hub-icon python">🐍</div>
+                <div class="hub-info"><div class="hub-title">Python Professional</div><div class="hub-desc">1,000 Step Engineering Track</div></div>
+            </button>
+            <div class="drawer"><div class="ch-grid" id="python-chapters"></div></div>
+        </div>
+
+        <!-- AI Module -->
+        <div class="hub-card" id="ai-hub">
+            <button class="hub-btn" onclick="toggleHub('ai')">
+                <div class="hub-icon ai">🤖</div>
+                <div class="hub-info"><div class="hub-title">AI & ML Engineering</div><div class="hub-desc">Deep-dive Neural Networks</div></div>
+            </button>
+            <div class="drawer"><div class="ch-grid" id="ai-chapters"></div></div>
+        </div>
+    </div>
+
+    <script>
+        const pyChapters = ["Foundations", "Control Flow", "Data Structures", "Functions", "Modules", "File I/O", "OOP", "Advanced Patterns", "Connected Dev", "Architect"];
+        const aiChapters = ["Foundations", "Data Prep", "Supervised", "Unsupervised", "Neural Networks", "Computer Vision", "NLP", "RL & Ensembles", "MLOps", "LLMs"];
+
+        function renderChapters() {
+            const pyGrid = document.getElementById('python-chapters');
+            const aiGrid = document.getElementById('ai-chapters');
+            
+            pyChapters.forEach((name, i) => {
+                pyGrid.innerHTML += `<a href="python/index.html?chapter=${i+1}" class="ch-link"><span class="ch-n">${String(i+1).padStart(2, '0')}</span> ${name}</a>`;
+            });
+            aiChapters.forEach((name, i) => {
+                aiGrid.innerHTML += `<a href="ai-ml/index.html?chapter=${i+1}" class="ch-link"><span class="ch-n">${String(i+1).padStart(2, '0')}</span> ${name}</a>`;
+            });
+        }
+
+        async function studentLogin(autoId = null, autoPass = null) {
+            const id = autoId || document.getElementById('enroll-id').value.trim();
+            const pass = autoPass || document.getElementById('enroll-pass').value.trim();
+            if(!id || !pass) return;
+
+            try {
+                const docRef = window.eduSync.doc(window.eduSync.db, "students", id);
+                const docSnap = await window.eduSync.getDoc(docRef);
+                if (docSnap.exists() && docSnap.data().password === pass) {
+                    localStorage.setItem('eduask_student_creds', JSON.stringify({ id, pass }));
+                    document.getElementById('display-name').textContent = docSnap.data().name;
+                    document.getElementById('student-gate').style.display = 'none';
+                } else {
+                    document.getElementById('error-msg').style.display = 'block';
+                }
+            } catch (e) { console.error(e); }
+        }
+
+        function toggleHub(id) {
+            document.querySelectorAll('.hub-card').forEach(c => {
+                if(c.id === id + '-hub') c.classList.toggle('expanded');
+                else c.classList.remove('expanded');
+            });
+        }
+
+        window.onload = () => {
+            renderChapters();
+            const creds = localStorage.getItem('eduask_student_creds');
+            if (creds) { const { id, pass } = JSON.parse(creds); studentLogin(id, pass); }
+        };
+    </script>
+</body>
+</html>
